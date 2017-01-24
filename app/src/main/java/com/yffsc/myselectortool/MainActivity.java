@@ -38,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 DataPickerDialog.Builder builder = new DataPickerDialog.Builder(MainActivity.this);
                 //List<String> data = Arrays.asList(new String[]{"a", "b", "c", "d", "e", "f", "g", "h","i","j","k","l","m"});
-                DataPickerDialog dialog = builder.setMapData(data)
+                DataPickerDialog dialog = builder.setMapData(data,null).setSelection("value:3","value:4")
                         .setOnDataSelectedListener(new DataPickerDialog.OnDataSelectedListener() {
                     @Override
-                    public void onDataSelected(String itemKey, String itemValue, int itemId) {
-                        Toast.makeText(MainActivity.this, "key:"+itemKey+"  value:" + itemValue + "--: ID:" + itemId, Toast.LENGTH_LONG).show();
-                        Log.i("ii","key:"+itemKey+"  value:" + itemValue + "--: ID:" + itemId);
+                    public void onDataSelected(String itemKey1, String itemValue1, int itemId1,String itemKey2, String itemValue2, int itemId2) {
+                        Toast.makeText(MainActivity.this, itemKey1+"-" + itemValue1 + "-" + itemId1+"  ::  "+itemKey2+"-" + itemValue2 + "-" + itemId2, Toast.LENGTH_LONG).show();
+                        Log.i("ii",itemKey1+"-" + itemValue1 + "-" + itemId1+"  ::  "+itemKey2+"-" + itemValue2 + "-" + itemId2);
                     }
                 })
                         .setCyclen(true)

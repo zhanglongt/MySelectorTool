@@ -99,12 +99,14 @@
 
             <!-- 2-->
             <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/flPick2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.yffsc.myselectortool.WheelSelector.LoopView
-                    android:id="@+id/loop_data1"
+                    android:id="@+id/loop_data2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal" />

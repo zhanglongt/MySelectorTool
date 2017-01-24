@@ -29,32 +29,22 @@ public class DataPickerDialog extends Dialog {
     }
 
 
-    public void setSelection(String itemValue) {
-        if (params.dataList.size() > 0) {
-            int idx = params.dataList.indexOf(itemValue);
-            if (idx >= 0) {
-                params.initSelection = idx;
-                params.loopData.setCurrentItem(params.initSelection);
-            }
-        }
-    }
-
-
     public interface OnDataSelectedListener {
-        void onDataSelected(String itemKey, String itemValue ,int itemId);
+        void onDataSelected(String itemKey1, String itemValue1, int itemId1,String itemKey2, String itemValue2, int itemId2);
     }
 
     private static final class Params {
         private boolean shadow = true;
         private boolean canCancel = true;
-        private LoopView loopData;
+        private LoopView loopData1, loopData2;
         private String title;
         private String unit;
-        private int initSelection;
+        private int initSelection1,initSelection2;
         private boolean isCycle;
         private OnDataSelectedListener callback;
-        private final List<String> dataList = new ArrayList<>();
-        private final List<Map<String,String>> mapDataList = new ArrayList<>();
+        private final List<String> dataList1 = new ArrayList<>();
+        private final List<String> dataList2 = new ArrayList<>();
+        private final List<Map<String, String>> mapDataList = new ArrayList<>();
 
     }
 
@@ -67,30 +57,49 @@ public class DataPickerDialog extends Dialog {
             params = new DataPickerDialog.Params();
         }
 
-        private final String getCurrDateValue() {
-            return params.loopData.getCurrentItemValue();
+        private final String getCurrDateValue1() {
+            return params.loopData1.getCurrentItemValue();
         }
-        private final int getCurrDateValueId() {
-            return params.loopData.getCurrentItem();
+
+        private final int getCurrDateValueId1() {
+            return params.loopData1.getCurrentItem();
+        }
+
+        private final String getCurrDateValue2() {
+            return params.loopData2.getCurrentItemValue();
+        }
+
+        private final int getCurrDateValueId2() {
+            return params.loopData2.getCurrentItem();
         }
 
 
         public Builder setData(List<String> dataList) {
-            params.dataList.clear();
-            params.dataList.addAll(dataList);
+            params.dataList1.clear();
+            params.dataList1.addAll(dataList);
             return this;
         }
 
-        private List<Map<String,String>> mapData;
-        private List<String> dataL;
-        public Builder setMapData(List<Map<String,String>> mapDataList) {
-            dataL=new ArrayList<>();
-            mapData=mapDataList;
-            for (int i = 0; i < mapDataList.size(); i++) {
-               dataL.add( mapDataList.get(i).entrySet().iterator().next().getValue());
+        private List<Map<String, String>> mapData, mapData2;
+        private List<String> dataL, dataL2;
+
+        public Builder setMapData(List<Map<String, String>> mapDataList1, List<Map<String, String>> mapDataList2) {
+            dataL = new ArrayList<>();
+            mapData = mapDataList1;
+            for (int i = 0; i < mapDataList1.size(); i++) {
+                dataL.add(mapDataList1.get(i).entrySet().iterator().next().getValue());
             }
-            params.dataList.clear();
-            params.dataList.addAll(dataL);
+            params.dataList1.clear();
+            params.dataList1.addAll(dataL);
+            if (mapDataList2 != null) {
+                dataL2 = new ArrayList<>();
+                mapData2 = mapDataList2;
+                for (int i = 0; i < mapDataList2.size(); i++) {
+                    dataL2.add(mapDataList2.get(i).entrySet().iterator().next().getValue());
+                }
+                params.dataList2.clear();
+                params.dataList2.addAll(dataL2);
+            }
             return this;
         }
 
@@ -103,17 +112,48 @@ public class DataPickerDialog extends Dialog {
             params.unit = unit;
             return this;
         }
-    public final String getText_key(){//获取键
-        return mapData.get(getCurrDateValueId()).entrySet().iterator().next().getKey();
-    }
+
+        public final String getText_key1() {//获取键1
+            return mapData.get(getCurrDateValueId1()).entrySet().iterator().next().getKey();
+        }
+
+        public final String getText_key2() {//获取键2
+            if(mapData2!=null) {
+                return mapData2.get(getCurrDateValueId2()).entrySet().iterator().next().getKey();
+            }else {
+                return "";
+            }
+        }
+
 
 //    public String getText_value(){//获取值
 //        return mapData.get(getCurrDateValueId()).entrySet().iterator().next().getValue();
 //    }
 
-        public Builder setSelection(int selection) {
-            params.initSelection = selection;
+
+        public Builder setSelection(int selection,int selection2) {
+            params.initSelection1 = selection;
+            params.initSelection2 = selection2;
             return this;
+        }
+
+        public Builder setSelection(String itemValue1,String itemValue2) {
+            if (params.dataList1.size() > 0) {
+                int idx = params.dataList1.indexOf(itemValue1);
+                if (idx >= 0) {
+                    params.initSelection1 = idx;
+                    //params.loopData1.setCurrentItem(params.initSelection1);
+                }
+            }
+            if (params.dataList2.size() > 0) {
+                int idx = params.dataList2.indexOf(itemValue2);
+                if (idx >= 0) {
+                    params.initSelection2 = idx;
+                    //params.loopData2.setCurrentItem(params.initSelection2);
+                }
+            }
+            return this;
+
         }
 
         public Builder setCyclen(boolean isCycle) {
@@ -141,18 +181,29 @@ public class DataPickerDialog extends Dialog {
                 txUnit.setText(params.unit);
             }
 
-            final LoopView loopData = (LoopView) view.findViewById(R.id.loop_data);
-            loopData.setArrayList(params.dataList);
-            loopData.setNotLoop();
-            if (params.dataList.size() > 0) {
-                loopData.setCurrentItem(params.initSelection);
-                loopData.setCyclic(params.isCycle);
+            final LoopView loopData1 = (LoopView) view.findViewById(R.id.loop_data);
+            loopData1.setArrayList(params.dataList1);
+            loopData1.setNotLoop();
+            if (params.dataList1.size() > 0) {
+                loopData1.setCurrentItem(params.initSelection1);
+                loopData1.setCyclic(params.isCycle);
             }
+
+            final LoopView loopData2 = (LoopView) view.findViewById(R.id.loop_data2);
+            if(params.dataList2.size()>0) {
+                view.findViewById(R.id.flPick2).setVisibility(View.VISIBLE);
+                loopData2.setArrayList(params.dataList2);
+                loopData2.setNotLoop();
+                loopData2.setCurrentItem(params.initSelection2);
+                loopData2.setCyclic(params.isCycle);
+            }
+
             view.findViewById(R.id.tx_finish).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
-                    params.callback.onDataSelected(getText_key(),getCurrDateValue(),getCurrDateValueId());
+                    params.callback.onDataSelected(getText_key1(), getCurrDateValue1(), getCurrDateValueId1()
+                                                    ,getText_key2(),getCurrDateValue2(),getCurrDateValueId2());
                 }
             });
             view.findViewById(R.id.tx_title).setOnClickListener(new View.OnClickListener() {
@@ -175,7 +226,8 @@ public class DataPickerDialog extends Dialog {
             dialog.setCanceledOnTouchOutside(params.canCancel);
             dialog.setCancelable(params.canCancel);
 
-            params.loopData = loopData;
+            params.loopData1 = loopData1;
+            params.loopData2 = loopData2;
             dialog.setParams(params);
 
             return dialog;

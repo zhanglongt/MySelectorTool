@@ -216,7 +216,12 @@ public class LoopView extends View {
     }
 
     public final String getCurrentItemValue(){
-        return String.valueOf(arrayList.get(getCurrentItem())).trim();
+//        return String.valueOf(arrayList.get(getCurrentItem())).trim();
+        if(arrayList!=null) {
+            return String.valueOf(arrayList.get(getCurrentItem())).trim();
+        }else {
+            return "";
+        }
     }
 
 //    public final String getText_key(){//获取键
